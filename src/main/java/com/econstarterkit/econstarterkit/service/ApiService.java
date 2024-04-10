@@ -4,6 +4,7 @@ import com.econstarterkit.econstarterkit.entity.Problem;
 import com.econstarterkit.econstarterkit.repository.ProblemRepository;
 import com.econstarterkit.econstarterkit.type.Difficulty;
 import com.econstarterkit.econstarterkit.type.Institution;
+import com.econstarterkit.econstarterkit.type.ProblemType;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -16,51 +17,65 @@ import org.xml.sax.SAXException;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.net.*;
+import java.net.URLEncoder;
 
 @Service
 @RequiredArgsConstructor
 public class ApiService {
     @Value("${koreaSecuritiesDepository.apikey}")
     private String apiKey_ksd;
-    @Value("${koreaBank.apikey}")
-    private String apiKey_kb;
+
+    @Value("${koreaBasicDict.apikey}")
+    private String apikey_koreaBasicDict;
 
     private final ProblemRepository problemRepository;
 
     public void getApi() throws IOException, ParserConfigurationException, SAXException {
-        getApi_koreaSecuritiesDepository();
+//        getApi_koreaSecuritiesDepository();
         getApi_koreaBank();
     }
 
-    private void getApi_koreaBank() throws IOException {
-        for (int i = 0; i < 19055; i++) {
+    private void getApi_koreaBank() throws IOException, ParserConfigurationException, SAXException {
+        for (int i = 0; i < 19055; i++) {       // 19055
             String text = String.valueOf((char)(0xAC00 + i));
-            String apiUrl = "https://ecos.bok.or.kr/api/StatisticWord/" + apiKey_kb + "/json/kr/1/100/" + text;
-            URL url = new URL(apiUrl);
-            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-            connection.setRequestMethod("GET");
-            int responseCode = connection.getResponseCode();
-            BufferedReader br;
+            StringBuilder urlBuilder = new StringBuilder("https://krdict.korean.go.kr/api/search"); /*URL*/
+            urlBuilder.append("?" + URLEncoder.encode("key", "UTF-8") + "=" + apikey_koreaBasicDict); /*Service Key*/
+            urlBuilder.append("&" + URLEncoder.encode("type_search", "UTF-8") + "=" + URLEncoder.encode("search", "UTF-8")); /*LIKE 검색*/
+            urlBuilder.append("&" + URLEncoder.encode("q", "UTF-8") + "=" + URLEncoder.encode(text, "UTF-8")); /*검색어*/
+            urlBuilder.append("&" + URLEncoder.encode("advanced", "UTF-8") + "=" + URLEncoder.encode("y", "UTF-8")); /*자세히찾기 여부 */
+            urlBuilder.append("&" + URLEncoder.encode("method", "UTF-8") + "=" + URLEncoder.encode("start", "UTF-8")); /*검색 방식*/
+            urlBuilder.append("&" + URLEncoder.encode("sense_cat", "UTF-8") + "=" + URLEncoder.encode("77", "UTF-8")); /*의미 범주*/
+            urlBuilder.append("&" + URLEncoder.encode("pos", "UTF-8") + "=" + URLEncoder.encode("1,2,11", "UTF-8")); /*품사*/
 
-            if (responseCode == 200) {
-                br = new BufferedReader(new InputStreamReader(connection.getInputStream()));
-            } else {
-                br = new BufferedReader(new InputStreamReader(connection.getErrorStream()));
+            DocumentBuilderFactory dbFactoty = DocumentBuilderFactory.newInstance();
+            DocumentBuilder dBuilder = dbFactoty.newDocumentBuilder();
+            Document doc = dBuilder.parse(urlBuilder.toString());
+
+            // 제일 첫번째 태그
+            doc.getDocumentElement().normalize();
+
+            // 파싱할 tag
+            NodeList items = doc.getElementsByTagName("item");
+
+            for (int temp = 0; temp < items.getLength(); temp++) {
+                Node nNode = items.item(temp);
+
+                Element eElement = (Element) nNode;
+
+                Problem problem = Problem.builder()
+                        .description(getTagValue("word", eElement))
+                        .correctWord(getTagValue("definition", eElement))
+                        .difficulty(Difficulty.NOT_CHECK)
+                        .institution(Institution.BASIC_KOREAN_DICTIONARY)
+                        .type(ProblemType.WORD)
+                        .build();
+
+                problemRepository.save(problem);
             }
-
-            String inputLine;
-            StringBuilder response = new StringBuilder();
-            while ((inputLine = br.readLine()) != null) {
-                response.append(inputLine);
-            }
-            br.close();
-
-            System.out.println(response);
         }
+
+        System.out.println("finish");
     }
 
     public void getApi_koreaSecuritiesDepository() throws IOException, SAXException, ParserConfigurationException {
@@ -79,7 +94,6 @@ public class ApiService {
 
         // 파싱할 tag
         NodeList items = doc.getElementsByTagName("item");
-        System.out.println(items.getLength());
 
         for (int temp = 0; temp < items.getLength(); temp++) {
             Node nNode = items.item(temp);
@@ -91,6 +105,7 @@ public class ApiService {
                     .correctWord(getTagValue("fnceDictNm", eElement))
                     .difficulty(Difficulty.NOT_CHECK)
                     .institution(Institution.KOREA_SECURITIES_DEPOSITORY)
+                    .type(ProblemType.WORD)
                     .build();
 
             problemRepository.save(problem);
@@ -98,7 +113,6 @@ public class ApiService {
     }
 
     public static String getTagValue(String tag, Element eElement) {
-
         //결과를 저장할 result 변수 선언
         String result = "";
 

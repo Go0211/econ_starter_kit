@@ -3,6 +3,7 @@ package com.econstarterkit.econstarterkit.dto;
 import com.econstarterkit.econstarterkit.entity.Problem;
 import com.econstarterkit.econstarterkit.type.Difficulty;
 import com.econstarterkit.econstarterkit.type.Institution;
+import com.econstarterkit.econstarterkit.type.ProblemType;
 import lombok.*;
 
 @Getter
@@ -12,6 +13,8 @@ import lombok.*;
 @Builder
 public class ProblemDto {
     Long id;
+
+    ProblemType type;
 
     String description;
 
@@ -24,6 +27,7 @@ public class ProblemDto {
     public ProblemDto toDto(Problem problem) {
         return ProblemDto.builder()
                 .id(problem.getId())
+                .type(problem.getType())
                 .description(problem.getDescription())
                 .correctWord(problem.getCorrectWord())
                 .difficulty(problem.getDifficulty())
