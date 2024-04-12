@@ -12,12 +12,12 @@ import javax.xml.parsers.ParserConfigurationException;
 import java.io.IOException;
 
 @RestController
-@RequestMapping("/update-all-data")
+@RequestMapping("/api-get")
 @RequiredArgsConstructor
 public class ApiController {
     private final ApiService apiService;
 
-    @GetMapping("/first-setting")
+    @GetMapping
     public ResponseEntity<?> apiUpdate() throws IOException, ParserConfigurationException, SAXException {
         apiService.getApi();
         return ResponseEntity.ok().build();

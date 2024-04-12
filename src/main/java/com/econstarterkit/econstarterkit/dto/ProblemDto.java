@@ -20,6 +20,8 @@ public class ProblemDto {
 
     String correctWord;
 
+    String otherCorrectWord;
+
     Difficulty difficulty;
 
     Institution institution;
@@ -30,6 +32,7 @@ public class ProblemDto {
                 .type(problem.getType())
                 .description(problem.getDescription())
                 .correctWord(problem.getCorrectWord())
+                .otherCorrectWord(problem.getOtherCorrectWord())
                 .difficulty(problem.getDifficulty())
                 .institution(problem.getInstitution())
                 .build();

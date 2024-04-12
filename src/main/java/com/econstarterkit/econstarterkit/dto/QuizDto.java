@@ -4,22 +4,30 @@ import com.econstarterkit.econstarterkit.type.Difficulty;
 import com.econstarterkit.econstarterkit.type.ProblemType;
 import lombok.*;
 
-@Getter
-@Setter
-@NoArgsConstructor
-@AllArgsConstructor
-@Builder
 public class QuizDto {
-    ProblemType type;
-    Difficulty difficulty;
-
-    public static class GetQuizDtoToStr {
-        String type;
+    @Getter
+    @Setter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class StrType {
+        String problemType;
         String difficulty;
+    }
 
-        public void strToEnum() {
-            QuizDto quizDto = new QuizDto();
+    @Getter
+    @Setter
+    @Builder
+    public static class EnumType {
+        ProblemType problemType;
+        Difficulty difficulty;
+    }
 
-        }
+    @Getter
+    @Setter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class ProblemData {
+        Long problemId;
+        String word;
     }
 }

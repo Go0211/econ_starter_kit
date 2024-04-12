@@ -1,0 +1,20 @@
+### api를 가져오는 url
+GET http://localhost:8080/api-get
+
+### quiz 시작 url
+POST http://localhost:8080/quiz/start
+Content-Type: application/json
+
+{
+  "problemType" : "word",
+  "difficulty" : "not_check"
+}
+
+### quiz 입력값 정답 check url
+POST http://localhost:8080/quiz/correct-check
+Content-Type: application/json
+
+{
+  "problemId" : 1,
+  "word" : "직접청약"
+}

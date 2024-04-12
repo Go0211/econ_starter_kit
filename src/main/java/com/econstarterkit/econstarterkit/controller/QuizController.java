@@ -1,13 +1,13 @@
 package com.econstarterkit.econstarterkit.controller;
 
 import com.econstarterkit.econstarterkit.dto.QuizDto;
+import com.econstarterkit.econstarterkit.entity.Problem;
 import com.econstarterkit.econstarterkit.service.QuizService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/quiz")
@@ -22,11 +22,21 @@ public class QuizController {
         return ResponseEntity.ok().build();
     }
 
-    @GetMapping("/start")
+    @PostMapping("/start")
     public ResponseEntity<?> quizStart(
-            @RequestBody QuizDto quizDto
+            @RequestBody QuizDto.StrType quizDto
     ) {
-        quizService.getProblem(quizDto);
-        return ResponseEntity.ok().build();
+//      난의도, 타입에 따라서 문제 다 가져오기
+        List<Problem> problem = quizService.getProblem(quizDto);
+        return ResponseEntity.ok(problem);
+    }
+
+    @PostMapping("/correct-check")
+    public ResponseEntity<?> correctCheck(
+            @RequestBody QuizDto.ProblemData problemData
+    ) {
+        boolean correct = quizService.checkQuizAnswer(
+                problemData.getProblemId(), problemData.getWord());
+        return ResponseEntity.ok(correct);
     }
 }

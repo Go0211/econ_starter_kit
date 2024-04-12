@@ -32,8 +32,8 @@ public class ApiService {
     private final ProblemRepository problemRepository;
 
     public void getApi() throws IOException, ParserConfigurationException, SAXException {
-//        getApi_koreaSecuritiesDepository();
-        getApi_koreaBank();
+        getApi_koreaSecuritiesDepository();
+//        getApi_koreaBank();
     }
 
     private void getApi_koreaBank() throws IOException, ParserConfigurationException, SAXException {
@@ -100,15 +100,28 @@ public class ApiService {
 
             Element eElement = (Element) nNode;
 
+            String[] words = divideWordAndInParentheses(getTagValue("fnceDictNm", eElement));
+
             Problem problem = Problem.builder()
                     .description(getTagValue("ksdFnceDictDescContent", eElement))
-                    .correctWord(getTagValue("fnceDictNm", eElement))
+                    .correctWord(words[0])
+                    .otherCorrectWord(words[1])
                     .difficulty(Difficulty.NOT_CHECK)
                     .institution(Institution.KOREA_SECURITIES_DEPOSITORY)
                     .type(ProblemType.WORD)
                     .build();
 
             problemRepository.save(problem);
+        }
+    }
+
+    private String[] divideWordAndInParentheses(String word) {
+        String[] words = word.trim().split("\\(");
+        if (words.length == 1) {
+            return new String[]{word, ""};
+        } else {
+            words[1] = words[1].replace(")", "");
+            return words;
         }
     }
 

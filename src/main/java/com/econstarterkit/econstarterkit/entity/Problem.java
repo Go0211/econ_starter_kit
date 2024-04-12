@@ -23,7 +23,6 @@ public class Problem {
 
     @Column(name = "type")
     @Enumerated(EnumType.STRING)
-    @ColumnDefault("OTHER")
     ProblemType type;
 
     @Column(name = "description", length = 4000)
@@ -32,14 +31,15 @@ public class Problem {
     @Column(name = "correct_word")
     String correctWord;
 
+    @Column(name = "other_correct_word")
+    String otherCorrectWord;
+
     @Enumerated(EnumType.STRING)
     @Column(name = "difficulty")
-    @ColumnDefault("NOT_CHECK")
     Difficulty difficulty;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "institution")
-    @ColumnDefault("AUTHOR_INDICATION_X")
     Institution institution;
 
     public Problem toEntity(ProblemDto problemDto) {
@@ -48,6 +48,7 @@ public class Problem {
                 .type(problemDto.getType())
                 .description(problemDto.getDescription())
                 .correctWord(problemDto.getCorrectWord())
+                .otherCorrectWord(problemDto.getOtherCorrectWord())
                 .difficulty(problemDto.getDifficulty())
                 .institution(problemDto.getInstitution())
                 .build();
