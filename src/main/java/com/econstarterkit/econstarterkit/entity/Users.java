@@ -3,10 +3,6 @@ package com.econstarterkit.econstarterkit.entity;
 import com.econstarterkit.econstarterkit.type.UserRole;
 import jakarta.persistence.*;
 import lombok.*;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
-
-import java.util.Collection;
 
 @Entity
 @Table(name = "users")
@@ -29,5 +25,4 @@ public class Users{
     @Column(name = "user_role")
     @Enumerated(EnumType.STRING)
     UserRole userRole;
-
 }

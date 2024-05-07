@@ -3,8 +3,8 @@ package com.econstarterkit.econstarterkit.type;
 import com.fasterxml.jackson.annotation.JsonValue;
 
 public enum UserRole {
-    USER("user"),
-    ADMIN("admin");
+    USER("USER"),
+    ADMIN("ADMIN");
 
     private final String userRoleText;
 

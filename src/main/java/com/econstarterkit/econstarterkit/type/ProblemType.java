@@ -3,10 +3,10 @@ package com.econstarterkit.econstarterkit.type;
 import com.fasterxml.jackson.annotation.JsonValue;
 
 public enum ProblemType {
-    WORD("word"),
-    HISTORY("history"),
-    OTHER("other"),
-    ALL("all");
+    WORD("WORD"),
+    HISTORY("HISTORY"),
+    OTHER("OTHER"),
+    ALL("ALL");
 
     private final String problemTypeText;
 

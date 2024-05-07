@@ -1,17 +1,25 @@
 ### join post
-POST http://localhost:8080/user/join
+POST http://localhost:8080/users/join
 Content-Type: application/json
 
 {
-  "username": "1235",
+  "email": "1235",
   "password": "1235"
 }
 
 ### login post
-POST http://localhost:8080/user/login
+POST http://localhost:8080/users/login
 Content-Type: application/json
 
 {
-  "username": "1235",
+  "email": "1235",
   "password": "1235"
 }
+
+### info 확인
+GET http://localhost:8080/users/info
+Accept: application/json
+
+### admin 확인
+GET http://localhost:8080/users/admin
+Accept: application/json

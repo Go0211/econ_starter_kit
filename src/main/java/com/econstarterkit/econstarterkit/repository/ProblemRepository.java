@@ -12,5 +12,8 @@ import java.util.Optional;
 @Repository
 public interface ProblemRepository extends JpaRepository<Problem, Long> {
     Optional<Problem> findById(Long id);
+
+    List<Problem> findAll();
+
     List<Problem> findAllByDifficultyAndType(Difficulty difficulty, ProblemType type);
 }
